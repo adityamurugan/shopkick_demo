@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shopkick demo website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--bootstrap css and js-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../assets/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200&display=swap" rel="stylesheet">
+
+</head>
+
+
+<body>
+    
+<!-- Heading -->
+<div id= "headingSec" class="text-center py-4">
+    <h4>Shopkick demo dashboard</h4>
+</div>
+
+<!-- Quick summary section -->
+<div id="quickSummary">
+    <div class="container py-4 text-center">
+        <h5>Quick summary</h5>
+        <div class="card-group text-center py-3">
+            <div class="card">
+              <div class="card-header">Total subscribers</div>
+              <div class="card-body">
+                <h5 class="card-title"><%= summaryData.totalCount %></h5>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Total signups last 30 days</div>
+              <div class="card-body">
+                <h5 class="card-title"><%= summaryData.monthCount %></h5>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Active users last 30 days</div>
+              <div class="card-body">
+                <h5 class="card-title"><%= summaryData.activeUsers %></h5>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Total kicks last 30 days</div>
+              <div class="card-body">
+                <h5 class="card-title"><%= summaryData.monthTotal %></h5>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+
+<div class="py-1" >
+    <div class="container text-center">
+    <h5>Top 10 Users last 30 days</h5>  
+      <div class="row py-4">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered ">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Kicks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < topUsers.length; i++) { %>
+                <tr>
+                  <th><%= i + 1 %></th>
+                  <td><%= topUsers[i].users.first_name %> <%= topUsers[i].users.last_name %></td>
+                  <td><%= topUsers[i].total %></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="py-1" >
+    <div class="container text-center">
+    <h5>Top 3 products last 30 days based on kicks</h5>  
+      <div class="row py-4">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered ">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Kicks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < topProducts.length; i++) { %>
+                <tr>
+                  <th><%= i + 1 %></th>
+                  <td><%= topProducts[i].product.name %></td>
+                  <td><%= topProducts[i].total %></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
