@@ -5,7 +5,7 @@ var Kicks = require('../models/index').Kicks
 var today = new Date()
 var priorDate = new Date(new Date().setDate(today.getDate()-30))
 
-var uri = "mongodb+srv://adi:Aditya_1@cluster0-xaimo.mongodb.net/shopkick?retryWrites=true&w=majority";
+var uri = process.env.MONGO_URI;
 
 var options = {
     server: {
