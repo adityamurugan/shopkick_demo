@@ -115,4 +115,61 @@ async function queryProducts(){
     return res
 }
 
-module.exports = {queryUsers: queryUsers, queryTopUsers: queryTopUsers, queryProducts:queryProducts}
+async function queryActive(){
+
+    var pipeline = [
+        {$addFields: {  "month" : {$month: '$kick_timestamp'}}},
+        {
+            "$group":{
+                "_id": '$month',
+                "total": { 
+                    "$sum": 1 
+                },
+                "active": { "$addToSet": "$user_id" }
+            }
+        },
+        {
+            "$project": {
+                _id: 0,
+                month: "$_id",
+                "activeUsers": {"$size": "$active"}
+            }
+        },
+        { "$sort": { "month": 1 } }
+    ];
+    res = await Kicks.aggregate(pipeline)
+    return res
+
+}
+
+async function queryCats(){
+    var pipeline = [
+        {
+            "$match":{
+                'kick_timestamp': {"$lt": today, "$gte": priorDate}
+            }
+        },
+        {
+            $lookup:
+              {
+                from: "product_category",
+                localField: "product_id",
+                foreignField: "id",
+                as: "product"
+              }
+        },
+        { "$unwind": "$product" },
+        {
+            "$group":{
+                "_id": '$product.category',
+                "kicks": { 
+                    "$sum": "$kicks" 
+                } 
+            }
+        }
+    ];
+    res = await Kicks.aggregate(pipeline)
+    return res
+}
+
+module.exports = {queryUsers: queryUsers, queryTopUsers: queryTopUsers, queryProducts:queryProducts, queryActive: queryActive, queryCats:queryCats}

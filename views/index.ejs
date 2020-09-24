@@ -123,6 +123,20 @@
   </div>
 </div>
 
+<div class="py-1" >
+  <div class="container text-center">
+    <h5>Charts</h5>
+    <div class="row py-4">
+      <div class="col-md-6">
+        <canvas id="line-chart" width="800" height="450"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="pie-chart" width="800" height="450"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 
 function monthName(mon) {
@@ -156,6 +170,89 @@ $('#sel1').change(async function(){
       res[i].total + '</td></tr>')
     }
 })
+
+var trendData = '<%- JSON.stringify(trendData) %>';
+trendData = JSON.parse(trendData)
+
+x_data = []
+y_data = []
+
+for (i = 0; i < trendData.length; i++){
+  x_data.push(monthName(trendData[i].month));
+  y_data.push(trendData[i].activeUsers)
+}
+
+
+new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: x_data,
+    datasets: [{ 
+        data: y_data,
+        borderColor: "#3e95cd",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    legend: {
+            display: false
+    },
+    title: {
+      display: true,
+      text: 'Active users per months trend'
+    },
+    scales: {
+      yAxes: [{
+          scaleLabel: {
+              display: true,
+              labelString: 'Active users',
+          },
+          type: 'linear',
+          position: 'left',
+          ticks: {
+              min: 20,
+              max: 80
+          }
+      }]
+    }
+  }
+});
+
+var catData = '<%- JSON.stringify(catKicks) %>';
+catData = JSON.parse(catData)
+
+x_data = []
+y_data = []
+
+for (i = 0; i < catData.length; i++){
+  x_data.push(catData[i]._id);
+  y_data.push(catData[i].kicks)
+}
+
+new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels: x_data,
+      datasets: [{
+        label: "Kicks",
+        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+        data: y_data
+      }]
+    },
+    options: {
+      legend: {
+            position: 'bottom'
+      },
+      title: {
+        display: true,
+        text: 'Kicks by category: last 30 days'
+      }
+    }
+});
+
+
+
 </script>
 
 
