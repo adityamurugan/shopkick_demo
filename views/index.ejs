@@ -58,64 +58,105 @@
 </div>
 
 <div class="py-1" >
-    <div class="container text-center">
-    <h5>Top 10 Users last 30 days</h5>  
-      <div class="row py-4">
-        <div class="col-md-12">
-          <div class="table-responsive">
-            <table class="table table-bordered ">
-              <thead class="thead-light">
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Kicks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(var i=0; i < topUsers.length; i++) { %>
-                <tr>
-                  <th><%= i + 1 %></th>
-                  <td><%= topUsers[i].users.first_name %> <%= topUsers[i].users.last_name %></td>
-                  <td><%= topUsers[i].total %></td>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
+  <div class="container text-center">
+  <h5>Top 10 Users for: </h5>
+  <div class="row justify-content-center">
+    <div class="col-md-4 form-group">
+        <select class="form-control" id="sel1">
+        </select>
+    </div> 
+  </div>
+    <div class="row py-2">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table id="topUsers" class="table table-bordered ">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Kicks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i < topUsers.length; i++) { %>
+              <tr>
+                <th><%= i + 1 %></th>
+                <td><%= topUsers[i].users.first_name %> <%= topUsers[i].users.last_name %></td>
+                <td><%= topUsers[i].total %></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="py-1" >
-    <div class="container text-center">
-    <h5>Top 3 products last 30 days based on kicks</h5>  
-      <div class="row py-4">
-        <div class="col-md-12">
-          <div class="table-responsive">
-            <table class="table table-bordered ">
-              <thead class="thead-light">
-                <tr>
-                  <th>#</th>
-                  <th>Product</th>
-                  <th>Kicks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(var i=0; i < topProducts.length; i++) { %>
-                <tr>
-                  <th><%= i + 1 %></th>
-                  <td><%= topProducts[i].product.name %></td>
-                  <td><%= topProducts[i].total %></td>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
+<div class="py-1" >
+  <div class="container text-center">
+  <h5>Top 3 products last 30 days based on kicks</h5>  
+    <div class="row py-4">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered ">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Kicks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i < topProducts.length; i++) { %>
+              <tr>
+                <th><%= i + 1 %></th>
+                <td><%= topProducts[i].product.name %></td>
+                <td><%= topProducts[i].total %></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<script>
+
+function monthName(mon) {
+   return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'][mon - 1];
+}
+
+month = new Date().getMonth() + 1
+
+for (i = 0; i < 5; i++) { 
+mname = monthName(month - i)
+document.getElementById("sel1").innerHTML += "<option>" + mname + "</option>"
+}
+
+$('#sel1').change(async function(){
+    month = new Date(Date.parse($(this).val() +" 1, 2012")).getMonth()+1
+    data = await fetch("/queryMonthly",
+    {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({month: month})
+    })
+    res = await data.json()
+    
+    $('#topUsers tbody').html("");
+    for (var i = 0; i < res.length; i++) {
+      sn = i+1
+      $('#topUsers').append('<tr><td>' + sn + '</td><td>' + res[i].users.first_name + " " + res[i].users.last_name + '</td><td>' +
+      res[i].total + '</td></tr>')
+    }
+})
+</script>
 
 
 </body>

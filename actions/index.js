@@ -5,7 +5,7 @@ var Kicks = require('../models/index').Kicks
 var today = new Date()
 var priorDate = new Date(new Date().setDate(today.getDate()-30))
 
-var uri = process.env.MONGO_URI;
+var uri = process.env.MONGO_URI || "mongodb+srv://adi:Aditya_1@cluster0-xaimo.mongodb.net/shopkick?retryWrites=true&w=majority";
 
 var options = {
     server: {
@@ -47,26 +47,15 @@ async function queryUsers(){
     data.monthTotal = monthKicks[0].total
     activeUsers = await Kicks.distinct("user_id", {'kick_timestamp': {"$lt": today, "$gte": priorDate}})
     data.activeUsers = activeUsers.length
-    /*res = await Kicks.aggregate([{
-        $lookup:
-          {
-            from: "user_info",
-            localField: "user_id",
-            foreignField: "id",
-            as: "users"
-          }
-        },
-        { "$unwind": "$users" }
-      ])
-    console.log(res)*/
     return data
 }
 
-async function queryTopUsers(){
+async function queryTopUsers(monthParam){
     var pipeline = [
+        {$addFields: {  "month" : {$month: '$kick_timestamp'}}},
         {
             "$match":{
-                'kick_timestamp': {"$lt": today, "$gte": priorDate}
+                'month': monthParam
             }
         },
         {
@@ -77,7 +66,7 @@ async function queryTopUsers(){
                 } 
             }
         },
-        { "$sort": { "total": -1 } },
+        { "$sort": { "total": -1, "_id": -1 } },
         { "$limit": 10 },
         {
             $lookup:
